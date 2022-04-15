@@ -1,0 +1,16 @@
+C:\Users\Ольга\Documents\моя 2.0\прога 2\ИГРА\Flowers and frogs\Flowers and frogs\bin\Debug\net5.0-windows\Flowers and frogs.exe
+C:\Users\Ольга\Documents\моя 2.0\прога 2\ИГРА\Flowers and frogs\Flowers and frogs\bin\Debug\net5.0-windows\Flowers and frogs.deps.json
+C:\Users\Ольга\Documents\моя 2.0\прога 2\ИГРА\Flowers and frogs\Flowers and frogs\bin\Debug\net5.0-windows\Flowers and frogs.runtimeconfig.json
+C:\Users\Ольга\Documents\моя 2.0\прога 2\ИГРА\Flowers and frogs\Flowers and frogs\bin\Debug\net5.0-windows\Flowers and frogs.runtimeconfig.dev.json
+C:\Users\Ольга\Documents\моя 2.0\прога 2\ИГРА\Flowers and frogs\Flowers and frogs\bin\Debug\net5.0-windows\Flowers and frogs.dll
+C:\Users\Ольга\Documents\моя 2.0\прога 2\ИГРА\Flowers and frogs\Flowers and frogs\bin\Debug\net5.0-windows\ref\Flowers and frogs.dll
+C:\Users\Ольга\Documents\моя 2.0\прога 2\ИГРА\Flowers and frogs\Flowers and frogs\bin\Debug\net5.0-windows\Flowers and frogs.pdb
+C:\Users\Ольга\Documents\моя 2.0\прога 2\ИГРА\Flowers and frogs\Flowers and frogs\obj\Debug\net5.0-windows\Flowers and frogs.csproj.AssemblyReference.cache
+C:\Users\Ольга\Documents\моя 2.0\прога 2\ИГРА\Flowers and frogs\Flowers and frogs\obj\Debug\net5.0-windows\Flowers and frogs.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Ольга\Documents\моя 2.0\прога 2\ИГРА\Flowers and frogs\Flowers and frogs\obj\Debug\net5.0-windows\Flowers and frogs.AssemblyInfoInputs.cache
+C:\Users\Ольга\Documents\моя 2.0\прога 2\ИГРА\Flowers and frogs\Flowers and frogs\obj\Debug\net5.0-windows\Flowers and frogs.AssemblyInfo.cs
+C:\Users\Ольга\Documents\моя 2.0\прога 2\ИГРА\Flowers and frogs\Flowers and frogs\obj\Debug\net5.0-windows\Flowers and frogs.csproj.CoreCompileInputs.cache
+C:\Users\Ольга\Documents\моя 2.0\прога 2\ИГРА\Flowers and frogs\Flowers and frogs\obj\Debug\net5.0-windows\Flowers and frogs.dll
+C:\Users\Ольга\Documents\моя 2.0\прога 2\ИГРА\Flowers and frogs\Flowers and frogs\obj\Debug\net5.0-windows\ref\Flowers and frogs.dll
+C:\Users\Ольга\Documents\моя 2.0\прога 2\ИГРА\Flowers and frogs\Flowers and frogs\obj\Debug\net5.0-windows\Flowers and frogs.pdb
+C:\Users\Ольга\Documents\моя 2.0\прога 2\ИГРА\Flowers and frogs\Flowers and frogs\obj\Debug\net5.0-windows\Flowers and frogs.genruntimeconfig.cache
