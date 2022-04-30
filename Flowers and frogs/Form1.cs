@@ -24,9 +24,14 @@ namespace Flowers_and_frogs
                             "тогда они обрадуются и уйдут", "Про игру", MessageBoxButtons.OK);
             
             var model = new Model();
-            CreateFlowers(model);
+            CreateFlowers(model);//нужно ли эти методы распихать по своим классам или оставить их тут?
+            CreateFrogs(model);
+            CreateBouet(model);
             SpawnFlowers(model);
+            SpawnFogs(model);
+
             
+
             var buttonCollectBouquet = new Button()
             {
                 Location = new Point(700,450),
@@ -35,6 +40,7 @@ namespace Flowers_and_frogs
                 BackColor = Color.Moccasin
                 
             };
+            buttonCollectBouquet.Click += new EventHandler(model.CollectBouquet);
             Controls.Add(buttonCollectBouquet);
 
             var buttonThrowCollectedFlowers = new Button()
@@ -46,13 +52,78 @@ namespace Flowers_and_frogs
             };
             buttonThrowCollectedFlowers.Click += new EventHandler(model.ThrowCollectedFlowers);
             Controls.Add(buttonThrowCollectedFlowers);
+        }
 
-            var frog1 = new PictureBox()
+        private static void CreateBouet(Model model)
+        {
+            var bouquet = new Bouquet(new[] {Color.Pink, Color.Orange, Color.Blue},
+                Image.FromFile(@"..\..\..\Pictures\BluePinkOrangeBouquet.png"));
+            bouquet.PictureBox.Visible = false;
+            model.Bouquet = bouquet;
+        }
+
+        private void CreateFrogs(Model model)
+        {
+            for (int i = 0; i < 3; i++)
             {
-                Image = Image.FromFile(@"..\..\..\Pictures\Frog1.png"),
-                Bounds = new Rectangle(new Point(850,200), new Size(96,96))
-            };
-            Controls.Add(frog1);
+                Color color;
+                Image image;
+                switch (i)
+                {
+                    case 0:
+                        color = Color.Orange;
+                        image=Image.FromFile(@"..\..\..\Pictures\OrangeFrog.png");
+                        break;
+                    case 1:
+                        color = Color.Blue;
+                        image=Image.FromFile(@"..\..\..\Pictures\BlueFrog.png");
+                        break;
+                    case 2:
+                        color = Color.Pink;
+                        image=Image.FromFile(@"..\..\..\Pictures\PinkFrog.png");
+                        break;
+                    default://надо ли?
+                        color = Color.Orange;
+                        image=Image.FromFile(@"..\..\..\Pictures\OrangeFrog.png");
+                        break;
+                }
+
+                var frog = new Frog(color, new Point(-100,-100), image);
+                model.FrogsArray[i] = frog;
+                
+                frog.PictureBox.Click += (sender, args) => // нужно ли это писать здесь или вынести куда-либо
+                {
+                    if (model.Bouquet.PictureBox.Visible) 
+                    {
+                        if (model.Bouquet.Colors.Where(x => x == frog.Color).Count() == 3)
+                        {
+                            model.Money += 3;
+                            model.Bouquet.PictureBox.Visible = false;
+                            frog.Location = new Point(-100, -100);
+                            frog.PictureBox.Bounds = new Rectangle(frog.Location, new Size(96, 96));
+                        }
+                        else if (model.Bouquet.Colors.Where(x => x == frog.Color).Count() == 2)
+                        {
+                            model.Money += 2;
+                            model.Bouquet.PictureBox.Visible = false;
+                            frog.Location = new Point(-100, -100);
+                            frog.PictureBox.Bounds = new Rectangle(frog.Location, new Size(96, 96));
+                        }
+                        else if (model.Bouquet.Colors.Where(x => x == frog.Color).Count() == 1)
+                        {
+                            model.Money += 1;
+                            model.Bouquet.PictureBox.Visible = false;
+                            frog.Location = new Point(-100, -100);
+                            frog.PictureBox.Bounds = new Rectangle(frog.Location, new Size(96, 96));
+                        }
+                        else //нет совпадающих цветов лягушка злится
+                        {
+                            
+                        }
+                    }
+                };
+                Controls.Add(frog.PictureBox);
+            }
         }
 
         private static void SpawnFlowers(Model model)
@@ -62,32 +133,41 @@ namespace Flowers_and_frogs
             timer.Tick += ((sender, args) => { model.TrySpawnFlower(model); });
             timer.Start();
         }
+        
+        private static void SpawnFogs(Model model)
+        {
+            var timer = new Timer();
+            timer.Interval = 3000;
+            timer.Tick += ((sender, args) => { model.TrySpawnFrogs(model); });
+            timer.Start();
+        }
 
         private void CreateFlowers(Model model)
         {
-            for (int i = 0; i < 9; i++) //create flowers
+            for (int i = 0; i < 12; i++)
             {
-                var color = Color.Empty;
-                Image image = null;
-
-                if (i / 3 == 0)
+                Color color;
+                Image image;
+                switch (i/4)
                 {
-                    color = Color.Pink;
-                    image = Image.FromFile(@"..\..\..\Pictures\PinkFlower.png");
+                    case 0: 
+                        color = Color.Pink;
+                        image = Image.FromFile(@"..\..\..\Pictures\PinkFlower.png");
+                        break;
+                    case 1:
+                        color = Color.Blue;
+                        image = Image.FromFile(@"..\..\..\Pictures\BlueFlower.png");
+                        break;
+                    case 2:
+                        color = Color.Orange;
+                        image = Image.FromFile(@"..\..\..\Pictures\OrangeFlower.png");
+                        break;
+                    default://никогда не выйдет сюда, нужно ли оставить?
+                        color = Color.Pink;
+                        image = Image.FromFile(@"..\..\..\Pictures\PinkFlower.png");
+                        break;
                 }
-
-                if (i / 3 == 1)
-                {
-                    color = Color.Blue;
-                    image = Image.FromFile(@"..\..\..\Pictures\BlueFlower.png");
-                }
-
-                if (i / 3 == 2)
-                {
-                    color = Color.Orange;
-                    image = Image.FromFile(@"..\..\..\Pictures\OrangeFlower.png");
-                }
-
+                
                 var flower = new Flower(color, new Point(-100, -100), image);
                 model.FlowersArray[i] = flower;
 

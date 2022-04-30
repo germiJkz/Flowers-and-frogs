@@ -6,7 +6,7 @@ namespace Flowers_and_frogs
 {
     public class Flower
     {
-        public Color Color;
+        public Color Color;//стоит ли сделать private  написать методы для изменения этих полей?
         public PictureBox PictureBox;
         public Point Location;
 
@@ -16,7 +16,8 @@ namespace Flowers_and_frogs
             PictureBox = new PictureBox()
             {
                 Image = image,
-                Bounds = new Rectangle(location, new Size(64, 64))
+                Bounds = new Rectangle(location, new Size(64, 64)),
+                BackColor = Color.Transparent
             };
             Location = location;
         }
