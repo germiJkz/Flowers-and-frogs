@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -19,19 +20,36 @@ namespace Flowers_and_frogs
             Height = 600;
             Width = 1000;
             BackgroundImage= Image.FromFile(@"..\..\..\Pictures\back.jpg");
-            MessageBox.Show("К тебе будут приходить злые жабы. " +
-                            "Ты можешь дать им цветочек такого же цвета, как и жаба, " +
-                            "тогда они обрадуются и уйдут", "Про игру", MessageBoxButtons.OK);
-            
+            MessageBox.Show("К тебе будут приходить злые жабы. Ты можешь забодрить их букетами с цветами"+
+                            "(нажми на жабу, чтобы отдать ей собранный букет)." +
+                            " За цветы, что по цвету совпадают с цветом лягушки, ты будешь получать от них монетки." +
+                            " Если ты не дашь жабе нужного цветка или она устанет ждать, то она тебя укусит." +
+                            "\nПопробуй завоевать жабью любовь!", "Про игру", MessageBoxButtons.OK);
+
             var model = new Model();
             CreateFlowers(model);//нужно ли эти методы распихать по своим классам или оставить их тут?
             CreateFrogs(model);
-            CreateBouet(model);
+            CreateBouquet(model);
             SpawnFlowers(model);
             SpawnFogs(model);
 
-            
+            var display = new Label()
+            {
+                Text = "0/20",
+                Location = new Point(810, 20)
+            };
+            Controls.Add(display);
 
+            var livesBox = new PictureBox()
+            {
+                Image = Image.FromFile(@"..\..\..\Pictures\heart3.png"),
+                BackColor = Color.Transparent,
+                Location = new Point(25, 25),
+                AutoSize = true,
+                Visible = true
+            };
+            Controls.Add(livesBox);
+            
             var buttonCollectBouquet = new Button()
             {
                 Location = new Point(700,450),
@@ -52,23 +70,75 @@ namespace Flowers_and_frogs
             };
             buttonThrowCollectedFlowers.Click += new EventHandler(model.ThrowCollectedFlowers);
             Controls.Add(buttonThrowCollectedFlowers);
+            
+            Update(display, livesBox, model);
         }
 
-        private static void CreateBouet(Model model)
+        private static void Update(Label display, PictureBox livesBox, Model model)
+        {
+            var timer = new Timer();
+            timer.Interval = 10;
+            timer.Tick += ((sender, args) =>
+            {
+                display.Text = model.Money.ToString() + "/20";
+                foreach (var frog in model.FrogsArray.Where(frog => frog.Location != new Point(-100, -100))) 
+                {
+                    frog.DecreaseTime();
+                }
+                
+                var angryFrogs = model.FrogsArray
+                    .Where(frog => frog.Location != new Point(-100, -100) && frog.Time <= 0)
+                    .ToArray();
+                foreach (var frog in angryFrogs)
+                {
+                    model.Lives--;//добавить краснение краёв экрана
+                    
+                    frog.MoveTo(new Point(-100,-100));
+                    frog.ResetTime();
+                }
+                
+                if (model.Lives <= 0)
+                {
+                    timer.Stop();
+                    livesBox.Visible = false;
+                    MessageBox.Show("К сожалению, ты был съеден жабами...", "Проигрыш(", MessageBoxButtons.OK);
+                    Application.Exit();
+                }
+                else if (model.Lives == 1)
+                {
+                    livesBox.Image=Image.FromFile(@"..\..\..\Pictures\heart.png");
+                }
+                else if (model.Lives == 2)
+                {
+                    livesBox.Image=Image.FromFile(@"..\..\..\Pictures\heart2.png");
+                }
+                
+                if (model.Money >= 20)
+                {
+                    timer.Stop();
+                    MessageBox.Show("Поздравляю, ты завоевал жабью любовь. Теперь они оставят тебя в покое",
+                        "Победа!", MessageBoxButtons.OK);
+                    Application.Exit();
+                }
+            });
+            timer.Start();
+        }
+
+        private  void CreateBouquet(Model model)
         {
             var bouquet = new Bouquet(new[] {Color.Pink, Color.Orange, Color.Blue},
                 Image.FromFile(@"..\..\..\Pictures\BluePinkOrangeBouquet.png"));
-            bouquet.PictureBox.Visible = false;
             model.Bouquet = bouquet;
+            Controls.Add(bouquet.PictureBox);
         }
 
         private void CreateFrogs(Model model)
         {
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 9; i++)
             {
                 Color color;
                 Image image;
-                switch (i)
+                switch (i/3)
                 {
                     case 0:
                         color = Color.Orange;
@@ -87,7 +157,7 @@ namespace Flowers_and_frogs
                         image=Image.FromFile(@"..\..\..\Pictures\OrangeFrog.png");
                         break;
                 }
-
+                
                 var frog = new Frog(color, new Point(-100,-100), image);
                 model.FrogsArray[i] = frog;
                 
@@ -98,38 +168,42 @@ namespace Flowers_and_frogs
                         if (model.Bouquet.Colors.Where(x => x == frog.Color).Count() == 3)
                         {
                             model.Money += 3;
-                            model.Bouquet.PictureBox.Visible = false;
-                            frog.Location = new Point(-100, -100);
-                            frog.PictureBox.Bounds = new Rectangle(frog.Location, new Size(96, 96));
+                            model.Bouquet.Disappear();
+                            frog.MoveTo(new Point(-100,-100));
+                            frog.ResetTime();
                         }
                         else if (model.Bouquet.Colors.Where(x => x == frog.Color).Count() == 2)
                         {
                             model.Money += 2;
-                            model.Bouquet.PictureBox.Visible = false;
-                            frog.Location = new Point(-100, -100);
-                            frog.PictureBox.Bounds = new Rectangle(frog.Location, new Size(96, 96));
+                            model.Bouquet.Disappear();
+                            frog.MoveTo(new Point(-100,-100));
+                            frog.ResetTime();
                         }
                         else if (model.Bouquet.Colors.Where(x => x == frog.Color).Count() == 1)
                         {
                             model.Money += 1;
-                            model.Bouquet.PictureBox.Visible = false;
-                            frog.Location = new Point(-100, -100);
-                            frog.PictureBox.Bounds = new Rectangle(frog.Location, new Size(96, 96));
+                            model.Bouquet.Disappear();
+                            frog.MoveTo(new Point(-100,-100));
+                            frog.ResetTime();
                         }
                         else //нет совпадающих цветов лягушка злится
                         {
-                            
+                            model.Lives--;
+                            frog.MoveTo(new Point(-100,-100));
+                            frog.ResetTime();
                         }
                     }
                 };
+                
                 Controls.Add(frog.PictureBox);
+                Controls.Add(frog.Bar);
             }
         }
 
         private static void SpawnFlowers(Model model)
         {
             var timer = new Timer();
-            timer.Interval = 3000;
+            timer.Interval = 3500;
             timer.Tick += ((sender, args) => { model.TrySpawnFlower(model); });
             timer.Start();
         }
@@ -137,18 +211,18 @@ namespace Flowers_and_frogs
         private static void SpawnFogs(Model model)
         {
             var timer = new Timer();
-            timer.Interval = 3000;
+            timer.Interval = 10000;
             timer.Tick += ((sender, args) => { model.TrySpawnFrogs(model); });
             timer.Start();
         }
 
         private void CreateFlowers(Model model)
         {
-            for (int i = 0; i < 12; i++)
+            for (int i = 0; i < 21; i++)
             {
                 Color color;
                 Image image;
-                switch (i/4)
+                switch (i/7)
                 {
                     case 0: 
                         color = Color.Pink;
@@ -175,8 +249,7 @@ namespace Flowers_and_frogs
                 {
                     if (model.CollectedFlowers.Count < 3 && !model.CollectedFlowers.Contains(flower))
                     {
-                        flower.Location = model.CollectedFlowersPositions[model.CollectedFlowers.Count];
-                        flower.PictureBox.Bounds = new Rectangle(flower.Location, new Size(64, 64));
+                        flower.MoveTo(model.CollectedFlowersPositions[model.CollectedFlowers.Count]);
                         model.CollectedFlowers.Add(flower);
                     }
                 });
@@ -191,6 +264,7 @@ namespace Flowers_and_frogs
             graphics.FillRectangle(Brushes.Coral, new Rectangle(400,470,64,64));
             graphics.FillRectangle(Brushes.Coral, new Rectangle(330,470,64,64));
             graphics.FillRectangle(Brushes.Moccasin, new Rectangle(900,470,64,64));
+            graphics.DrawImage(Image.FromFile(@"..\..\..\Pictures\coin.png"), new Point(930, 15));
         }
     }
 }

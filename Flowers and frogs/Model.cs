@@ -11,12 +11,14 @@ namespace Flowers_and_frogs
         public Point[] FlowersPositions;
         public Point[] FrogsPositions;
         public Point[] CollectedFlowersPositions;
-        public Point BouquetPosition;
+        public Point BouquetPosition; //нужно ли?(не используется)
         public Bouquet Bouquet;
         public List<Flower> CollectedFlowers;
         public Flower[] FlowersArray;
         public Frog[] FrogsArray;
         public int Money;
+        public int Lives;
+        
 
         public Model()
         {
@@ -26,15 +28,20 @@ namespace Flowers_and_frogs
                 new Point(600, 150), new Point(250, 250), new Point(350, 250), new Point(450, 250),
                 new Point(550, 250)
             };
-            FrogsPositions = new Point[] {new Point(850, 100), new Point(850, 200), new Point(850, 300)};
+            FrogsPositions = new Point[] {new Point(850, 80), new Point(850, 200), new Point(850, 320)};
             CollectedFlowersPositions = new Point[3]
                 {new Point(330, 470), new Point(400, 470), new Point(470, 470)};
             BouquetPosition = new Point(900, 470);
             Bouquet = null;
             CollectedFlowers = new List<Flower>();
-            FlowersArray = new Flower[12] {null, null, null, null, null, null, null, null, null, null, null, null};
-            FrogsArray = new Frog[3] {null, null, null};
+            FlowersArray = new Flower[21]
+            {
+                null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                null, null, null, null
+            };
+            FrogsArray = new Frog[9] {null, null, null, null, null, null, null, null, null};
             Money = 0;
+            Lives = 3;
         }
         
         public  void TrySpawnFlower(Model model)
@@ -57,8 +64,7 @@ namespace Flowers_and_frogs
                 return;
             var newPoint = unusedPoints[random.Next(unusedPoints.Count)];
             
-            newFlower.Location = newPoint;
-            newFlower.PictureBox.Bounds = new Rectangle(newPoint, new Size(64, 64));
+            newFlower.MoveTo(newPoint);
         }
 
         public void TrySpawnFrogs(Model model)
@@ -81,16 +87,14 @@ namespace Flowers_and_frogs
                 return;
             var newPoint = unusedPoints[random.Next(unusedPoints.Count)];
             
-            newFrog.Location = newPoint;
-            newFrog.PictureBox.Bounds = new Rectangle(newPoint, new Size(96, 96));
+            newFrog.MoveTo(newPoint);
         }
         
         public void ThrowCollectedFlowers(object sender, System.EventArgs e)
         {
             foreach (var flower in CollectedFlowers)
             {
-                flower.Location = new Point(-100, -100);
-                flower.PictureBox.Bounds = new Rectangle(flower.Location, new Size(64, 64));
+                flower.MoveTo(new Point(-100, -100));
             }
             CollectedFlowers = new List<Flower>();
         }
@@ -99,7 +103,7 @@ namespace Flowers_and_frogs
         {
             if (CollectedFlowers.Count == 3)
             {
-                var colors = new List<Color>(CollectedFlowers.Select(x => x.Color));
+                var colors = CollectedFlowers.Select(x => x.Color).ToList();
                 Image image = null;
                 //выбор изображения:
                 if (colors.Where(x => x == Color.Orange).Count() == 3)
@@ -116,7 +120,7 @@ namespace Flowers_and_frogs
                 }
                 else if (colors.Contains(Color.Orange) && colors.Contains(Color.Blue) && colors.Contains(Color.Pink))
                 {
-                    image = Image.FromFile(@"..\..\..\Pictures\BluePinkOrangeBouquet");
+                    image = Image.FromFile(@"..\..\..\Pictures\BluePinkOrangeBouquet.png");
                 }
                 else if (colors.Where(x => x == Color.Orange).Count() == 2 && colors.Contains(Color.Blue)) 
                 {
@@ -144,13 +148,16 @@ namespace Flowers_and_frogs
                 }
                 else //не понадобиться. но оставлю как дефоолт вариант
                 {
-                    image = Image.FromFile(@"..\..\..\BluePinkOrangeBouquet.png");
+                    image = Image.FromFile(@"..\..\..\Puctures\BluePinkOrangeBouquet.png");
                 }
-
-
-                Bouquet.Colors = colors.ToArray();
-                Bouquet.PictureBox.Image = image;
-                Bouquet.PictureBox.Visible = true;
+                
+                Bouquet.Appear();
+                Bouquet.SetColors(colors.ToArray());
+                Bouquet.SetImage(image);
+                foreach (var flower in CollectedFlowers)
+                {
+                    flower.MoveTo(new Point(-100,-100));
+                }
                 CollectedFlowers = new List<Flower>();
             }
         }

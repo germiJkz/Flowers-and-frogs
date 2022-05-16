@@ -21,5 +21,11 @@ namespace Flowers_and_frogs
             };
             Location = location;
         }
+
+        public void MoveTo(Point newPoint)
+        {
+            Location = newPoint;
+            PictureBox.Bounds = new Rectangle(newPoint, new Size(64, 64));
+        }
     }
 }
