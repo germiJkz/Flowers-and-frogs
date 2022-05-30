@@ -7,7 +7,6 @@ namespace Flowers_and_frogs
     {
         public Color[] Colors;
         public PictureBox PictureBox;
-        public Point Location;//не двигается и не поэтому не исползуется. Оставить?
 
         public Bouquet(Color[] colors, Image image)
         {
@@ -19,7 +18,6 @@ namespace Flowers_and_frogs
                 BackColor = Color.Transparent,
                 Visible = false
             };
-            Location = new Point(900, 470);
         }
 
         public void Appear()

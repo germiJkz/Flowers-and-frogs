@@ -11,7 +11,6 @@ namespace Flowers_and_frogs
         public Point[] FlowersPositions;
         public Point[] FrogsPositions;
         public Point[] CollectedFlowersPositions;
-        public Point BouquetPosition; //нужно ли?(не используется)
         public Bouquet Bouquet;
         public List<Flower> CollectedFlowers;
         public Flower[] FlowersArray;
@@ -31,7 +30,6 @@ namespace Flowers_and_frogs
             FrogsPositions = new Point[] {new Point(850, 80), new Point(850, 200), new Point(850, 320)};
             CollectedFlowersPositions = new Point[3]
                 {new Point(330, 470), new Point(400, 470), new Point(470, 470)};
-            BouquetPosition = new Point(900, 470);
             Bouquet = null;
             CollectedFlowers = new List<Flower>();
             FlowersArray = new Flower[21]
@@ -99,7 +97,7 @@ namespace Flowers_and_frogs
             CollectedFlowers = new List<Flower>();
         }
 
-        public void CollectBouquet(object sender, System.EventArgs e)//не нормально работает
+        public void CollectBouquet(object sender, System.EventArgs e)
         {
             if (CollectedFlowers.Count == 3)
             {

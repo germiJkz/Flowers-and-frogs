@@ -189,6 +189,7 @@ namespace Flowers_and_frogs
                         else //нет совпадающих цветов лягушка злится
                         {
                             model.Lives--;
+                            model.Bouquet.Disappear();
                             frog.MoveTo(new Point(-100,-100));
                             frog.ResetTime();
                         }
